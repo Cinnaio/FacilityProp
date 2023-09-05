@@ -1,0 +1,7 @@
+name: FacilityProp
+version: '${version}'
+author: ['Cinnaio']
+depend:
+  - ItemsAdder
+main: com.github.cinnaio.facilityprop.FacilityProp
+api-version: '1.20'

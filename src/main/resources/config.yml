@@ -1,0 +1,7 @@
+# 配置文件中的原来存在的mian子键不要删除，硬配置
+facility:
+  teapan:
+    namespace: "grxi:teapan"
+    custom_model_data: 10014
+    needitems:
+      - 10021
