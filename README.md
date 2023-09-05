@@ -1,0 +1,1 @@
+FacilityProp 设备属性
