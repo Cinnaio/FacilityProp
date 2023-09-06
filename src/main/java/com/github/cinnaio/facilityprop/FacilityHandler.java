@@ -1,7 +1,7 @@
 package com.github.cinnaio.facilityprop;
 
-import com.github.cinnaio.facilityprop.resource.Property;
-import com.github.cinnaio.facilityprop.resource.Resource;
+import com.github.cinnaio.facilityprop.resource.*;
+import com.github.cinnaio.facilityprop.utils.*;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,21 +25,23 @@ public class FacilityHandler implements Listener {
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (ItemsAdder.isCustomBlock(e.getClickedBlock())) {
                     ItemStack block = ItemsAdder.getCustomBlock(e.getClickedBlock());
-
                     if (block.getItemMeta().getCustomModelData() == Resource.getCustomModelData(n)) {
                         Location loc = e.getClickedBlock().getLocation();
-
                         if (e.getMaterial() == Material.PAPER) {
                             for (Integer integer : Resource.getNeedItems(n)) {
                                 if (e.getItem().getItemMeta().getCustomModelData() == integer) {
-                                    if (e.getItem().getAmount() >= 8) {
-                                        if (e.getItem().getAmount() == 8) {
-                                            e.getItem().setAmount(0);
-                                            Property.PropTeapan(p, loc);
-                                        } else {
-                                            e.getItem().setAmount(e.getItem().getAmount() - 8);
-                                            Property.PropTeapan(p, loc);
+                                    if (Condition.getWeather(p).equals("sun")) {
+                                        if (e.getItem().getAmount() >= 8) {
+                                            if (e.getItem().getAmount() == 8) {
+                                                e.getItem().setAmount(0);
+                                                Property.PropTeapan(p, loc, n);
+                                            } else {
+                                                e.getItem().setAmount(e.getItem().getAmount() - 8);
+                                                Property.PropTeapan(p, loc, n);
+                                            }
                                         }
+                                    } else {
+                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#", "", "&#FBB6B6" + Language.error_weather).replace("&", "§"));
                                     }
                                 }
                             }
