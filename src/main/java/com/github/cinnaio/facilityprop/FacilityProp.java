@@ -14,9 +14,6 @@ public final class FacilityProp extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
-
-        File fileLang = new File("./plugins/FacilityProp/", "zh_cn.yml");
-//        if (!fileLang.exists())
         this.saveResource("zh_cn.yml", true);
 
         Bukkit.getPluginManager().registerEvents(new FacilityHandler(), this);
