@@ -3,6 +3,7 @@ package com.github.cinnaio.facilityprop.resource;
 import com.github.cinnaio.facilityprop.FacilityProp;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Resource {
@@ -18,5 +19,9 @@ public class Resource {
 
     public static Integer getCustomModelData(String n) {
         return file.getInt("facility." + n + ".custom_model_data");
+    }
+
+    public static Integer getTime(String n) {
+        return file.getInt("facility." + n + ".waitticks") * 20;
     }
 }
