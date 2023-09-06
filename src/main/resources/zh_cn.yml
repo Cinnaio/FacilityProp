@@ -1,1 +1,3 @@
 successful_teapan: "完成晒制！"
+error_weather: "当前不在制作天气内！"
+crafting_teapan: "晒制中，请等待！"
