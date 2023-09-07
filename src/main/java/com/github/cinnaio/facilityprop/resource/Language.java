@@ -11,4 +11,5 @@ public class Language {
     public static String successful_teapan = file.getString("successful_teapan");
     public static String error_weather = file.getString("error_weather");
     public static String crafting_teapan = file.getString("crafting_teapan");
+    public static String crafting_wait_time = file.getString("crafting_wait_time");
 }
