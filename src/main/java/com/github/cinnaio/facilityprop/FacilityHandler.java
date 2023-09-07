@@ -41,7 +41,7 @@ public class FacilityHandler implements Listener {
                                             }
                                         }
                                     } else {
-                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#", "", "&#FBB6B6" + Language.error_weather).replace("&", "§"));
+                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Language.error_weather).replace("&", "§"));
                                     }
                                 }
                             }

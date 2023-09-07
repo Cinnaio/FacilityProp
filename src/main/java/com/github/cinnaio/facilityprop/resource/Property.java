@@ -6,6 +6,8 @@ import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 
 public class Property {
@@ -13,7 +15,9 @@ public class Property {
         Bukkit.getScheduler().runTaskLater(FacilityProp.instance, () -> {
             CustomBlock.place("grxi:teapan_wet", loc);
         }, 3L);
-        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#", "", "&#FBB6B6" + Language.crafting_teapan).replace("&", "§"));
+
+        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#FBB6B6" + Language.crafting_teapan));
+
         Bukkit.getScheduler().runTaskLater(FacilityProp.instance, () -> {
             CustomBlock.place("grxi:teapan", loc);
         }, Resource.getTime(n));
@@ -23,7 +27,9 @@ public class Property {
         }, Resource.getTime(n) + 3L);
 
         Bukkit.getScheduler().runTaskLater(FacilityProp.instance, () -> {
-            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#", "", "&#FBB6B6" + Language.successful_teapan).replace("&", "§"));
+            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes("&#FBB6B6" + Language.successful_teapan));
         }, Resource.getTime(n));
+
+        MessageUtils.sendBossBarTick(p, Resource.getTime(n), BarColor.PINK, BarStyle.SEGMENTED_10);
     }
 }
