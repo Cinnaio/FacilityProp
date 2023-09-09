@@ -1,7 +1,8 @@
 package com.github.cinnaio.facilityprop;
 
 import com.github.cinnaio.facilityprop.resource.*;
-import com.github.cinnaio.facilityprop.utils.*;
+import com.github.cinnaio.facilityprop.utils.HexCodeUtils;
+import com.github.cinnaio.facilityprop.utils.MessageUtils;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,20 +29,14 @@ public class FacilityHandler implements Listener {
                     if (block.getItemMeta().getCustomModelData() == Resource.getCustomModelData(n)) {
                         Location loc = e.getClickedBlock().getLocation();
                         if (e.getMaterial() == Material.PAPER) {
-                            for (Integer integer : Resource.getNeedItems(n)) {
-                                if (e.getItem().getItemMeta().getCustomModelData() == integer) {
-                                    if (Condition.getWeather(p).equals("sun")) {
-                                        if (e.getItem().getAmount() >= 8) {
-                                            if (e.getItem().getAmount() == 8) {
-                                                e.getItem().setAmount(0);
-                                                Property.PropTeapan(p, loc, n);
-                                            } else {
-                                                e.getItem().setAmount(e.getItem().getAmount() - 8);
-                                                Property.PropTeapan(p, loc, n);
-                                            }
-                                        }
+                            if (Condition.isEqualItemCustomModelData(n, e)) {
+                                if (Resource.getWeather(n).equals("null")) {
+                                    Condition.changeAmount(n, e, p, loc);
+                                } else {
+                                    if (Condition.getWorldWeather(p).equals(Resource.getWeather(n))) {
+                                        Condition.changeAmount(n, e, p, loc);
                                     } else {
-                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Language.error_weather).replace("&", "§"));
+                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_weather));
                                     }
                                 }
                             }

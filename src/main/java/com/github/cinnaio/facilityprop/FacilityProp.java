@@ -13,7 +13,7 @@ public final class FacilityProp extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        saveDefaultConfig();
+        this.saveResource("config.yml", true);
         this.saveResource("zh_cn.yml", true);
 
         Bukkit.getPluginManager().registerEvents(new FacilityHandler(), this);

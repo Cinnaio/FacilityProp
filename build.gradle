@@ -51,4 +51,3 @@ processResources {
         expand props
     }
 }
-

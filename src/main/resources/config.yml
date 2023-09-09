@@ -1,8 +1,19 @@
-# 配置文件中的原来存在的mian子键不要删除，硬配置
+# 配置文件中的原来存在的facility子键不要删除，硬配置
+main:
+  hexcode_normal: '&#FBB6B6'
+  hexcode_bossbar: '&#E0E6FB'
+  hexcode_actionbar: '&#E0E6FB'
 facility:
   teapan:
     namespace: 'grxi:teapan'
     custom_model_data: 10014
     needitems:
-      - 10021
+      matcha_leaf:
+        custom_model_data: 10022
+        amount: 3
+      match:
+        custom_model_data: 10021
+        amount: 5
     waitticks: 3
+    condition:
+      weather: 'sun'

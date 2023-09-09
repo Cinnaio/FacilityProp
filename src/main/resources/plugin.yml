@@ -1,6 +1,6 @@
 name: FacilityProp
 version: '${version}'
-author: ['Cinnaio']
+author: Cinnaio
 depend:
   - ItemsAdder
 main: com.github.cinnaio.facilityprop.FacilityProp

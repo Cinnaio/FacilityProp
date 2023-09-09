@@ -6,8 +6,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HexCodeUtils {
+    public enum HexCode {
+        NORMAL, ACTIONBAR, BOSSBAR
+    }
+
     public static String translateHexCodes(String message) {
-        Pattern hexPattern = Pattern.compile(String.valueOf("&#") + "([A-Fa-f0-9]{6})" + "");
+        Pattern hexPattern = Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + "");
         return translate(hexPattern, message);
     }
 
