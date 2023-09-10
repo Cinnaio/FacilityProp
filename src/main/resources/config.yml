@@ -7,13 +7,12 @@ facility:
   teapan:
     namespace: 'grxi:teapan'
     custom_model_data: 10014
-    needitems:
+    # 这里是激活触发的物品 默认都为paper 没引入原版物品
+    acquire_items:
+      # 下文可自行添加
       matcha_leaf:
         custom_model_data: 10022
         amount: 3
-      match:
-        custom_model_data: 10021
-        amount: 5
-    waitticks: 3
+    waitting_times: 3
     condition:
-      weather: 'sun'
+      weather: 'rain'

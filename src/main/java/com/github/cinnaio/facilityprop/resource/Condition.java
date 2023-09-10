@@ -39,7 +39,7 @@ public class Condition {
 
         Integer tmpCustomModelData = 0;
 
-        for (List<Integer> item : Resource.getNeedItems(n)) {
+        for (List<Integer> item : Resource.getAcquireItems(n)) {
             for (Integer integer : item) {
                 tmpCustomModelData = integer;
             }
@@ -51,32 +51,23 @@ public class Condition {
 
     public static void changeAmount(String n, PlayerInteractEvent e, Player p, Location loc) {
         Integer holdAmount = e.getItem().getAmount();
-
         Integer tmpAmount = 0;
+        Boolean flag = false;
 
-        boolean flag = true;
-        for (List<Integer> item : Resource.getNeedItems(n)) {
-            // integer 通过遍历 获得 cmd 和 amount 首先为cmd 10022  手上为10021
-            for (Integer integer : item) {
-                System.out.println("origin: " + integer);
-                if (e.getItem().getItemMeta().getCustomModelData() == integer) {
-                    flag = !flag;
-                    continue;
-                }
-                // 第一次不相等 出 tmp = 10022 flag 为真 结束内循环
-                tmpAmount = integer;
-                System.out.println("now: tmp " + tmpAmount);
-                if (flag) {
-                    break;
-                }
+        for (List<Integer> items : Resource.getAcquireItems(n)) {
+            if (items.get(0) == e.getItem().getItemMeta().getCustomModelData()) {
+                flag = true;
+                continue;
             }
-            if (!flag) {
+
+            if (flag) {
+                tmpAmount = items.get(0);
                 break;
             }
         }
 
         if (holdAmount >= tmpAmount) {
-            if (holdAmount == tmpAmount) {
+            if (holdAmount.equals(tmpAmount)) {
                 e.getItem().setAmount(0);
                 Property.PropTeapan(p, loc, n);
             } else {

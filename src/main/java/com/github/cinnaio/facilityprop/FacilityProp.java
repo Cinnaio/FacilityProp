@@ -9,6 +9,8 @@ import java.io.File;
 public final class FacilityProp extends JavaPlugin {
     public static JavaPlugin instance;
 
+    public static String facility = "facility.";
+
     @Override
     public void onEnable() {
         instance = this;

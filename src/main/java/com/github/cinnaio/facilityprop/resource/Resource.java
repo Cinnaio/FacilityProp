@@ -7,10 +7,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Resource {
     private static FileConfiguration file = FacilityProp.instance.getConfig();
+
+    public static String facility = FacilityProp.facility;
 
     public static String getHexCode(HexCodeUtils.HexCode style) {
         if (style == HexCodeUtils.HexCode.ACTIONBAR)
@@ -22,43 +23,52 @@ public class Resource {
     }
 
     public static String getNameSpace(String n) {
-        return file.getString("facility." + n + ".namespace");
+        return file.getString(facility + n + ".namespace");
     }
 
-    public static List<List<Integer>> getNeedItems(String n) {
+    public static List<List<Integer>> getAcquireItems(String n) {
         List<List<Integer>> outerList = new ArrayList<>();
 
-        if (file.isConfigurationSection("facility." + n + ".needitems")) {
-            ConfigurationSection outerPart = file.getConfigurationSection("facility." + n + ".needitems");
+        if (file.isConfigurationSection(facility + n + ".acquire_items")) {
+            ConfigurationSection outerPart = file.getConfigurationSection(facility + n + ".acquire_items");
 
-            for (String string : outerPart.getKeys(false)) {
+            for (String outerKey : outerPart.getKeys(false)) {
+                Boolean skipInnerList = true;
 
                 for (String innerKey : outerPart.getKeys(true)) {
                     List<Integer> innerList = new ArrayList<>();
 
-                    if (innerKey.equals(string + ".custom_model_data")) {
+                    if (innerKey.equals(outerKey + ".custom_model_data")) {
                         innerList.add(outerPart.getInt(innerKey));
-                    } else if (innerKey.equals(string + ".amount")) {
+                        skipInnerList = false;
+                    } else if (innerKey.equals(outerKey + ".amount")) {
                         innerList.add(outerPart.getInt(innerKey));
+                        skipInnerList = false;
                     }
-                    outerList.add(innerList);
+
+                    if (!skipInnerList) {
+                        outerList.add(innerList);
+                    }
                 }
             }
         }
+        outerList.removeIf(List::isEmpty);
+
         return outerList;
     }
 
     public static Integer getCustomModelData(String n) {
-        return file.getInt("facility." + n + ".custom_model_data");
+        return file.getInt(facility + n + ".custom_model_data");
     }
 
     public static Integer getWaittingTime(String n) {
-        return file.getInt("facility." + n + ".waitticks") * 20;
+        return file.getInt(facility + n + ".waitting_times") * 20;
     }
 
     public static String getWeather(String n) {
-        if (file.isConfigurationSection("facility." + n + ".condition.weather"))
-            return file.getString("facility." + n + ".condition.weather");
+        if (file.isConfigurationSection(facility + n + ".condition")) {
+            return file.getString(facility + n + ".condition.weather");
+        }
         else
             return "null";
     }
