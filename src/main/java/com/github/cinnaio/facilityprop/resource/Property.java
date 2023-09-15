@@ -9,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class Property {
+    private static boolean flag = false;
+
     public static void PropTeapan(Player p, Location loc, String n) {
         CustomBlock.place("grxi:teapan_wet", loc);
         MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.crafting_teapan));
@@ -24,5 +26,18 @@ public class Property {
         Bukkit.getScheduler().runTaskLater(FacilityProp.instance, () -> {
             MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.successful_teapan));
         }, Resource.getWaittingTime(n));
+
+        flag = true;
+        Bukkit.getScheduler().runTaskLater(FacilityProp.instance, () -> {
+            flag = !flag;
+        }, Resource.getWaittingTime(n));
+    }
+
+    public static Boolean getFlag() {
+        if (flag) {
+            return true;
+        }
+        else
+            return false;
     }
 }
