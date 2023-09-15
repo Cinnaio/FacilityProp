@@ -8,42 +8,54 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Resource {
-    private static FileConfiguration file = FacilityProp.instance.getConfig();
+import static com.github.cinnaio.facilityprop.resource.Configuration.*;
 
-    public static String facility = FacilityProp.facility;
+public class Resource {
+    public static FileConfiguration file = FacilityProp.instance.getConfig();
 
     public static String getHexCode(HexCodeUtils.HexCode style) {
         if (style == HexCodeUtils.HexCode.ACTIONBAR)
-            return file.getString("main.hexcode_actionbar");
+            return file.getString(main_hexcode_actionbar);
         else if (style == HexCodeUtils.HexCode.BOSSBAR)
-            return file.getString("main.hexcode_bossbar");
+            return file.getString(main_hexcode_bossbar);
         else
-            return file.getString("main.hexcode_normal");
+            return file.getString(main_hexcode_normal);
     }
 
     public static String getNameSpace(String n) {
-        return file.getString(facility + n + ".namespace");
+        return file.getString(facility + n + namespace);
     }
 
-    public static List<List<Integer>> getAcquireItems(String n) {
-        List<List<Integer>> outerList = new ArrayList<>();
+    public static List<List<Object>> getAcquireItems(String n) {
+        List<List<Object>> outerList = new ArrayList<>();
 
-        if (file.isConfigurationSection(facility + n + ".acquire_items")) {
-            ConfigurationSection outerPart = file.getConfigurationSection(facility + n + ".acquire_items");
+        if (file.isConfigurationSection(facility + n + acquire_items)) {
+            ConfigurationSection outerPart = file.getConfigurationSection(facility + n + acquire_items);
 
             for (String outerKey : outerPart.getKeys(false)) {
                 Boolean skipInnerList = true;
 
                 for (String innerKey : outerPart.getKeys(true)) {
-                    List<Integer> innerList = new ArrayList<>();
+                    List<Object> innerList = new ArrayList<>();
 
-                    if (innerKey.equals(outerKey + ".custom_model_data")) {
+                    if (innerKey.equals(outerKey + custom_model_data)) {
                         innerList.add(outerPart.getInt(innerKey));
                         skipInnerList = false;
-                    } else if (innerKey.equals(outerKey + ".amount")) {
+                    } else if (innerKey.equals(outerKey + amount)) {
                         innerList.add(outerPart.getInt(innerKey));
                         skipInnerList = false;
+                    } else if (innerKey.equals(outerKey + conditions)) {
+                        ConfigurationSection conList = outerPart.getConfigurationSection(outerKey + conditions);
+
+                        for (String conKeys : conList.getKeys(false)) {
+                            if (conKeys.equals(weather)) {
+                                innerList.add(conList.getString(conKeys));
+                                skipInnerList = false;
+                            } else if (conKeys.equals(permissions)) {
+                                innerList.add(conList.getStringList(conKeys));
+                                skipInnerList = false;
+                            }
+                        }
                     }
 
                     if (!skipInnerList) {
