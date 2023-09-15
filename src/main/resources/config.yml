@@ -1,18 +1,32 @@
-# 配置文件中的原来存在的facility子键不要删除，硬配置
 main:
   hexcode_normal: '&#FBB6B6'
   hexcode_bossbar: '&#E0E6FB'
   hexcode_actionbar: '&#E0E6FB'
 facility:
+  #id
   teapan:
     namespace: 'grxi:teapan'
     custom_model_data: 10014
     # 这里是激活触发的物品 默认都为paper 没引入原版物品
     acquire_items:
-      # 下文可自行添加
+      # 触发物品 id
       matcha_leaf:
+        # cmd
         custom_model_data: 10022
+        # 数量
         amount: 3
+        # 条件
+        conditions:
+          weather: 'rain'
+          permissions:
+            - a
+      matcha:
+        custom_model_data: 10021
+        amount: 10
+        conditions:
+          weather: 'sun'
+          permissions:
+            - b
     waitting_times: 3
     condition:
       weather: 'rain'
