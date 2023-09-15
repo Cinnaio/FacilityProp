@@ -9,22 +9,20 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Condition {
-    public enum Weather {
-        SUN, RAIN, STROM, SNOW
-    }
+    static String sun = "sun";
+    static String rain = "rain";
+    static String snow = "snow";
+    static String storm = "storm";
 
     public static String getWorldWeather(Player p) {
         World w = p.getWorld();
-        String sun = "sun";
-        String rain = "rain";
-        String snow = "snow";
-        String storm = "storm";
 
         String tmp = w.isClearWeather() ? sun : rain;
 
-        if (tmp == rain) {
+        if (tmp.equals(rain)) {
             if (w.hasStorm()) {
                 return w.hasStorm() ? rain : snow;
             } else {
@@ -37,16 +35,57 @@ public class Condition {
     public static Boolean isEqualItemCustomModelData(String n, PlayerInteractEvent e) {
         ItemStack i = e.getItem();
 
-        Integer tmpCustomModelData = 0;
+        for (List<Object> items : Resource.getAcquireItems(n)) {
 
-        for (List<Integer> item : Resource.getAcquireItems(n)) {
-            for (Integer integer : item) {
-                tmpCustomModelData = integer;
+            for (Object item : items) {
+                if (item instanceof Integer) {
+                    if (item.equals(i.getItemMeta().getCustomModelData())) {
+                        return true;
+                    }
+                }
             }
-            if (i.getItemMeta().getCustomModelData() == tmpCustomModelData)
-                return true;
         }
         return false;
+    }
+
+    public static Boolean isEqualConditions(String n, PlayerInteractEvent e, Player p) {
+        Boolean flag = false;
+
+        for (List<Object> items : Resource.getAcquireItems(n)) {
+            for (Object item : items) {
+                if (item instanceof Integer) {
+                    if (item.equals(e.getItem().getItemMeta().getCustomModelData())) {
+                        flag = true;
+                    }
+                }
+
+                if (item instanceof String && flag) {
+                    if (item.equals(sun) || item.equals(rain) || item.equals(snow) || item.equals(storm)) {
+                        if (item.equals(getWorldWeather(e.getPlayer()))) {
+                            if (items.size() > 1) {
+                                List<Object> tmp = items.stream().filter(s -> !(s instanceof Integer)).collect(Collectors.toList());
+                                List<Object> temp = tmp.stream().skip(1).collect(Collectors.toList());
+
+                                for (Object s : temp) {
+                                    String per = s.toString();
+                                    if (!e.getPlayer().hasPermission(per.replaceAll("\\[", "").replaceAll("]", ""))) {
+                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_permission + " " + per));
+                                        return false;
+                                    }
+                                }
+                            }
+                        } else {
+                            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_weather));
+                            return false;
+                        }
+                    }
+
+                    flag = !flag;
+                }
+            }
+        }
+
+        return true;
     }
 
     public static void changeAmount(String n, PlayerInteractEvent e, Player p, Location loc) {
@@ -54,15 +93,20 @@ public class Condition {
         Integer tmpAmount = 0;
         Boolean flag = false;
 
-        for (List<Integer> items : Resource.getAcquireItems(n)) {
-            if (items.get(0) == e.getItem().getItemMeta().getCustomModelData()) {
-                flag = true;
-                continue;
-            }
+        for (List<Object> items : Resource.getAcquireItems(n)) {
+            for (Object item : items) {
+                if (item instanceof Integer) {
+                    if (item.equals(e.getItem().getItemMeta().getCustomModelData())) {
+                        flag = true;
+                        continue;
+                    }
 
-            if (flag) {
-                tmpAmount = items.get(0);
-                break;
+                    if (flag) {
+                        tmpAmount = (Integer) item;
+                        flag = !flag;
+                        break;
+                    }
+                }
             }
         }
 

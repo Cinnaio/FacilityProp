@@ -30,14 +30,8 @@ public class FacilityHandler implements Listener {
                         Location loc = e.getClickedBlock().getLocation();
                         if (e.getMaterial() == Material.PAPER) {
                             if (Condition.isEqualItemCustomModelData(n, e)) {
-                                if (Resource.getWeather(n).equals("null")) {
+                                if (Condition.isEqualConditions(n, e, p)) {
                                     Condition.changeAmount(n, e, p, loc);
-                                } else {
-                                    if (Condition.getWorldWeather(p).equals(Resource.getWeather(n))) {
-                                        Condition.changeAmount(n, e, p, loc);
-                                    } else {
-                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_weather));
-                                    }
                                 }
                             }
                         }
