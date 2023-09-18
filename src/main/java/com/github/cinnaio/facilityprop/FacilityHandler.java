@@ -1,8 +1,6 @@
 package com.github.cinnaio.facilityprop;
 
 import com.github.cinnaio.facilityprop.resource.*;
-import com.github.cinnaio.facilityprop.utils.HexCodeUtils;
-import com.github.cinnaio.facilityprop.utils.MessageUtils;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,20 +17,23 @@ public class FacilityHandler implements Listener {
     @EventHandler
     public void FacilityTeapan(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        String n = "teapan";
 
-        if (e.getHand() == EquipmentSlot.OFF_HAND)
-            e.setCancelled(true);
-        else {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (ItemsAdder.isCustomBlock(e.getClickedBlock())) {
-                    ItemStack block = ItemsAdder.getCustomBlock(e.getClickedBlock());
-                    if (block.getItemMeta().getCustomModelData() == Resource.getCustomModelData(n)) {
-                        Location loc = e.getClickedBlock().getLocation();
-                        if (e.getMaterial() == Material.PAPER) {
-                            if (Condition.isEqualItemCustomModelData(n, e)) {
-                                if (Condition.isEqualConditions(n, e, p)) {
-                                    Condition.changeAmount(n, e, p, loc);
+        for (String string : Resource.getFacility()) {
+            String n = string;
+
+            if (e.getHand() == EquipmentSlot.OFF_HAND)
+                e.setCancelled(true);
+            else {
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (ItemsAdder.isCustomBlock(e.getClickedBlock())) {
+                        ItemStack block = ItemsAdder.getCustomBlock(e.getClickedBlock());
+                        if (block.getItemMeta().getCustomModelData() == Resource.getCustomModelData(n)) {
+                            Location loc = e.getClickedBlock().getLocation();
+                            if (e.getMaterial() == Material.PAPER) {
+                                if (Condition.isEqualItemCustomModelData(n, e)) {
+                                    if (Condition.isEqualConditions(n, e, p)) {
+                                        Condition.changeAmount(n, e, p, loc);
+                                    }
                                 }
                             }
                         }
@@ -44,8 +45,6 @@ public class FacilityHandler implements Listener {
 
     @EventHandler
     public void HaltBroken(BlockBreakEvent e) {
-        Player p = e.getPlayer();
-
         if (ItemsAdder.isCustomBlock(e.getBlock())) {
             if (Property.getFlag()) {
                 e.setCancelled(true);
