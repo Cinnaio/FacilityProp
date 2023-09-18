@@ -1,32 +1,34 @@
+# 不要随意改动配置节点顺序 否则会出现一些问题
 main:
   hexcode_normal: '&#FBB6B6'
   hexcode_bossbar: '&#E0E6FB'
   hexcode_actionbar: '&#E0E6FB'
 facility:
-  #id
+  # 设备 id
   teapan:
+    # 设备信息限定
     namespace: 'grxi:teapan'
+    target_namespace: 'grxi:teapan_wet'
     custom_model_data: 10014
     # 这里是激活触发的物品 默认都为paper 没引入原版物品
     acquire_items:
-      # 触发物品 id
+      # 需要物品 id
       matcha_leaf:
-        # cmd
         custom_model_data: 10022
-        # 数量
         amount: 3
-        # 条件
+        # 等待时间 秒单位
+        waitting: 2
+        # 条件 可选
         conditions:
           weather: 'rain'
           permissions:
             - a
-      matcha:
-        custom_model_data: 10021
-        amount: 10
-        conditions:
-          weather: 'sun'
-          permissions:
-            - b
-    waitting_times: 3
-    condition:
-      weather: 'rain'
+        result_items:
+          leaf:
+            custom: true
+            namespace: 'grxi:white_tea_leaf'
+            amount: 5
+          stone:
+            custom: false
+            material: 'stone'
+            amount: 50
