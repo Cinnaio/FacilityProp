@@ -14,25 +14,25 @@ import static com.github.cinnaio.facilityprop.resource.Configuration.*;
 public class Resource {
     public static String getHexCode(HexCodeUtils.HexCode style) {
         if (style == HexCodeUtils.HexCode.ACTIONBAR)
-            return file.getString(main_hexcode_actionbar);
+            return file.getString(MAIN_HEXCODE_ACTIONBAR);
         else if (style == HexCodeUtils.HexCode.BOSSBAR)
-            return file.getString(main_hexcode_bossbar);
+            return file.getString(MAIN_HEXCODE_BOSSBAR);
         else
-            return file.getString(main_hexcode_normal);
+            return file.getString(MAIN_HEXCODE_NORMAL);
     }
 
     public static String getNameSpace(String n) {
-        return file.getString(facility + n + namespace);
+        return file.getString(FACILITY + n + NAMESPACE);
     }
     public static String getTargetNameSpace(String n) {
-        return file.getString(facility + n + target_namespace);
+        return file.getString(FACILITY + n + TARGET_NAMESPACE);
     }
 
     public static List<List<Object>> getAcquireItems(String n) {
         List<List<Object>> outerList = new ArrayList<>();
 
-        if (file.isConfigurationSection(facility + n + acquire_items)) {
-            ConfigurationSection outerPart = file.getConfigurationSection(facility + n + acquire_items);
+        if (file.isConfigurationSection(FACILITY + n + ACQUIRE_ITEMS)) {
+            ConfigurationSection outerPart = file.getConfigurationSection(FACILITY + n + ACQUIRE_ITEMS);
 
             for (String outerKey : outerPart.getKeys(false)) {
                 Boolean skipInnerList = true;
@@ -40,41 +40,41 @@ public class Resource {
                 for (String innerKey : outerPart.getKeys(true)) {
                     List<Object> innerList = new ArrayList<>();
 
-                    if (innerKey.equals(outerKey + custom_model_data)) {
+                    if (innerKey.equals(outerKey + CUSTOM_MODEL_DATA)) {
                         innerList.add(outerPart.getInt(innerKey));
                         skipInnerList = false;
-                    } else if (innerKey.equals(outerKey + amount)) {
+                    } else if (innerKey.equals(outerKey + AMOUNT)) {
                         innerList.add(outerPart.getInt(innerKey));
                         skipInnerList = false;
-                    } else if (innerKey.equals(outerKey + waitting)) {
+                    } else if (innerKey.equals(outerKey + WAITTING)) {
                         innerList.add(outerPart.getInt(innerKey));
                         skipInnerList = false;
-                    } else if (innerKey.equals(outerKey + conditions)) {
-                        ConfigurationSection conList = outerPart.getConfigurationSection(outerKey + conditions);
+                    } else if (innerKey.equals(outerKey + CONDITIONS)) {
+                        ConfigurationSection conList = outerPart.getConfigurationSection(outerKey + CONDITIONS);
 
                         for (String conKeys : conList.getKeys(false)) {
-                            if (conKeys.equals(weather)) {
+                            if (conKeys.equals(WEATHER)) {
                                 innerList.add(conList.getString(conKeys));
                                 skipInnerList = false;
-                            } else if (conKeys.equals(permissions)) {
+                            } else if (conKeys.equals(PERMISSIONS)) {
                                 innerList.add(conList.getStringList(conKeys));
                                 skipInnerList = false;
                             }
                         }
-                    } else if (innerKey.equals(outerKey + result_items)) {
-                        ConfigurationSection conList = outerPart.getConfigurationSection(outerKey + result_items);
+                    } else if (innerKey.equals(outerKey + RESULT_ITEMS)) {
+                        ConfigurationSection conList = outerPart.getConfigurationSection(outerKey + RESULT_ITEMS);
 
                         for (String id : conList.getKeys(false)) {
                             List<Object> innerDoubleList = new ArrayList<>();
 
                             for (String resKeys : conList.getKeys(true)) {
-                                if (resKeys.equals(id + result_custom)) {
+                                if (resKeys.equals(id + RESULT_CUSTOM)) {
                                     innerDoubleList.add(conList.getBoolean(resKeys));
-                                } else if (resKeys.equals(id + result_material)) {
+                                } else if (resKeys.equals(id + RESULT_MATERIAL)) {
                                     innerDoubleList.add(conList.getString(resKeys));
-                                } else if (resKeys.equals(id + result_namespace)) {
+                                } else if (resKeys.equals(id + RESULT_NAMESPACE)) {
                                     innerDoubleList.add(conList.getString(resKeys));
-                                } else if (resKeys.equals(id + result_amount)) {
+                                } else if (resKeys.equals(id + RESULT_AMOUNT)) {
                                     innerDoubleList.add(conList.getInt(resKeys));
                                 }
                             }
@@ -95,7 +95,15 @@ public class Resource {
     }
 
     public static Integer getCustomModelData(String n) {
-        return file.getInt(facility + n + ".custom_model_data");
+        return file.getInt(FACILITY + n + ".custom_model_data");
+    }
+
+    public static String getSoundConsistent(String n) {
+        return file.getString(FACILITY + n + ".sound_consistent");
+    }
+
+    public static String getSoundEnd(String n) {
+        return file.getString(FACILITY + n + ".sound_end");
     }
 
     public static Integer getWaitting(String n, PlayerInteractEvent e) {
@@ -129,8 +137,8 @@ public class Resource {
     public static List<String> getFacility() {
         List<String> stringList = new ArrayList<>();
 
-        if (file.isConfigurationSection(re_facility)) {
-            ConfigurationSection outerPart = file.getConfigurationSection(re_facility);
+        if (file.isConfigurationSection(RE_FACILITY)) {
+            ConfigurationSection outerPart = file.getConfigurationSection(RE_FACILITY);
 
             for (String string : outerPart.getKeys(false)) {
                 stringList.add(string);

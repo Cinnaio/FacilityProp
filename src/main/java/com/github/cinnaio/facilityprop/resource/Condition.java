@@ -14,24 +14,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Condition {
-    static String sun = "sun";
-    static String rain = "rain";
-    static String snow = "snow";
-    static String storm = "storm";
+    static String SUN = "sun";
+    static String RAIN = "rain";
+    static String SNOW = "snow";
+    static String STORM = "storm";
 
     public static String getWorldWeather(Player p) {
         World w = p.getWorld();
 
-        String tmp = w.isClearWeather() ? sun : rain;
+        String tmp = w.isClearWeather() ? SUN : RAIN;
 
-        if (tmp.equals(rain)) {
+        if (tmp.equals(RAIN)) {
             if (w.hasStorm()) {
-                return w.hasStorm() ? rain : snow;
+                return w.hasStorm() ? RAIN : SNOW;
             } else {
-                return storm;
+                return STORM;
             }
         } else
-            return sun;
+            return SUN;
     }
 
     public static Boolean isEqualItemCustomModelData(String n, PlayerInteractEvent e) {
@@ -62,7 +62,7 @@ public class Condition {
                 }
 
                 if (item instanceof String && flag) {
-                    if (item.equals(sun) || item.equals(rain) || item.equals(snow) || item.equals(storm)) {
+                    if (item.equals(SUN) || item.equals(RAIN) || item.equals(SNOW) || item.equals(STORM)) {
                         if (item.equals(getWorldWeather(e.getPlayer()))) {
                             if (items.size() == 2) {
                                 List<Object> tmp = items.stream().filter(s -> !(s instanceof Integer)).collect(Collectors.toList());
@@ -71,13 +71,13 @@ public class Condition {
                                 for (Object s : temp) {
                                     String per = s.toString();
                                     if (!e.getPlayer().hasPermission(per.replaceAll("\\[", "").replaceAll("]", ""))) {
-                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_permission + " " + per));
+                                        MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.ERROR_PERMISSION + " " + per.replaceAll("\\[", "").replaceAll("]", "")));
                                         return false;
                                     }
                                 }
                             }
                         } else {
-                            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_weather));
+                            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.ERROR_WEATHER));
                             return false;
                         }
                     }
@@ -115,59 +115,58 @@ public class Condition {
         if (holdAmount >= tmpAmount) {
             if (holdAmount.equals(tmpAmount)) {
                 e.getItem().setAmount(0);
-                Property.PropTeapan(p, loc, n, e);
+                Property.Property(p, loc, n, e);
             } else {
                 e.getItem().setAmount(e.getItem().getAmount() - tmpAmount);
-                Property.PropTeapan(p, loc, n, e);
+                Property.Property(p, loc, n, e);
             }
         } else {
-            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.error_amount));
+            MessageUtils.sendActionBar(p, HexCodeUtils.translateHexCodes(Resource.getHexCode(HexCodeUtils.HexCode.ACTIONBAR) + Language.ERROR_AMOUNT));
         }
     }
 
     public static void sendResultItems(String n, PlayerInteractEvent e) {
         Boolean flag = false;
-        Boolean flag1 = false;
+
+        Integer indexJudge = 0;
 
         for (List<Object> items : Resource.getAcquireItems(n)) {
+            indexJudge++;
             for (Object item : items) {
                 if (item instanceof Integer) {
                     if (item.equals(e.getItem().getItemMeta().getCustomModelData())) {
                         flag = true;
-                        flag1 = true;
                     }
                 }
             }
 
             if (flag) {
-                if (items.size() > 1) {
-                    if (flag1) {
-                        flag1 = !flag1;
-                        continue;
-                    }
-                    List<Object> tmp = items.stream().collect(Collectors.toList());
-
-                    for (Object object : tmp) {
-                        List<Object> temp = (List<Object>) object;
-                        if ((Boolean) temp.get(0)) {
-                            String naspaceData = (String) temp.get(1);
-                            Integer amountData = (Integer) temp.get(2);
-
-                            ItemStack itemStack = CustomStack.getInstance(naspaceData).getItemStack();
-                            itemStack.setAmount(amountData);
-
-                            e.getPlayer().getInventory().addItem(itemStack);
-                        } else {
-                            String materialData = ((String) temp.get(1)).toUpperCase();
-                            Integer amountData = (Integer) temp.get(2);
-
-                            ItemStack itemStack = new ItemStack(Material.getMaterial(materialData), amountData);
-
-                            e.getPlayer().getInventory().addItem(itemStack);
-                        }
-                    }
-                    flag = !flag;
+                if (indexJudge % 5 != 0) {
+                    continue;
                 }
+
+                List<Object> tmp = items.stream().collect(Collectors.toList());
+
+                for (Object object : tmp) {
+                    List<Object> temp = (List<Object>) object;
+                    if ((Boolean) temp.get(0)) {
+                        String naspaceData = (String) temp.get(1);
+                        Integer amountData = (Integer) temp.get(2);
+
+                        ItemStack itemStack = CustomStack.getInstance(naspaceData).getItemStack();
+                        itemStack.setAmount(amountData);
+
+                        e.getPlayer().getInventory().addItem(itemStack);
+                    } else {
+                        String materialData = ((String) temp.get(1)).toUpperCase();
+                        Integer amountData = (Integer) temp.get(2);
+
+                        ItemStack itemStack = new ItemStack(Material.getMaterial(materialData), amountData);
+
+                        e.getPlayer().getInventory().addItem(itemStack);
+                    }
+                }
+                flag = !flag;
             }
         }
     }
