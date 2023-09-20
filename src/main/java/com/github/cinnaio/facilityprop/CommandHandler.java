@@ -1,6 +1,5 @@
 package com.github.cinnaio.facilityprop;
 
-import com.github.cinnaio.facilityprop.resource.Language;
 import com.github.cinnaio.facilityprop.utils.HexCodeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

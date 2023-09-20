@@ -1,6 +1,8 @@
 package com.github.cinnaio.facilityprop;
 
-import com.github.cinnaio.facilityprop.resource.*;
+import com.github.cinnaio.facilityprop.resource.Condition;
+import com.github.cinnaio.facilityprop.resource.Property;
+import com.github.cinnaio.facilityprop.resource.Resource;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Location;
 import org.bukkit.Material;
