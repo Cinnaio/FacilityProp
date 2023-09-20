@@ -10,6 +10,8 @@ facility:
     namespace: 'grxi:teapan'
     target_namespace: 'grxi:teapan_wet'
     custom_model_data: 10014
+    sound_consistent: 'BLOCK_AZALEA_PLACE'
+    sound_end: 'BLOCK_BEEHIVE_DRIP'
     # 这里是激活触发的物品 默认都为paper 没引入原版物品
     acquire_items:
       # 需要物品 id
@@ -31,4 +33,4 @@ facility:
           stone:
             custom: false
             material: 'stone'
-            amount: 50
+            amount: 10
