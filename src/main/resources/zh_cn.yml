@@ -1,6 +1,5 @@
-successful_teapan: "完成晒制！"
+successful_craft: "完成晒制！"
 error_weather: "当前不在制作天气内！"
 error_amount: "所需数量不足！"
 error_permission: "所需权限不足！"
 crafting_teapan: "晒制中，请等待！"
-crafting_wait_time: "完成制作还需要时间："
