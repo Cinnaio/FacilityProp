@@ -1,0 +1,51 @@
+# FacilityProp v2 Recreated by Cinnaio
+# 2023/11/15
+basic:
+  debug: 'true'
+  normal-send-message: 'actionbar'
+facilities:
+  teapan:
+    name-space: 'grxi:teapan'
+    target-name-space: 'grxi:teapan_wet'
+    sound-processing: 'BLOCK_AZALEA_PLACE'
+    sound-processed: 'BLOCK_BEEHIVE_DRIP'
+    exchanges:
+      1:
+        name-space: 'grxi:matcha_leaf'
+        amount: 10
+        delay: 1
+        conditions:
+          weather: 'sun'
+          permission:
+            - perm.matcha
+            - perm.aaa
+          money: 100.00
+        provided:
+          1:
+            name-space: 'minecraft:stone'
+            amount: 2
+          2:
+            name-space: 'grxi:white_tea_leaf'
+            amount: 4
+  plant:
+    name-space: 'grxi:teapan'
+    target-name-space: 'grxi:teapan_wet'
+    sound-processing: 'BLOCK_AZALEA_PLACE'
+    sound-processed: 'BLOCK_BEEHIVE_DRIP'
+    exchanges:
+      1:
+        name-space: 'grxi:matcha_leaf'
+        amount: 20
+        delay: 1
+        conditions:
+          weather: 'sun'
+          permission:
+            - perm.matcha
+          money: 100.00
+        provided:
+          1:
+            name-space: 'minecraft:stone'
+            amount: 2
+          2:
+            name-space: 'grxi:white_tea_leaf'
+            amount: 4
