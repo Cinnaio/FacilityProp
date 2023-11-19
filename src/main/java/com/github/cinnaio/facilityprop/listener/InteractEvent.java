@@ -20,7 +20,7 @@ public class InteractEvent implements Listener {
             String temp = funHandler.blockEquality(e);
 
             if (temp != null && funHandler.itemEquality(e, temp)) {
-                this.funHandler.conduct();
+                return;
             }
         }
 

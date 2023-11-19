@@ -8,8 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class ConfigurationHandler {
     private JavaPlugin instance = FacilityProp.getInstance();
@@ -27,7 +25,7 @@ public class ConfigurationHandler {
     public ConfigurationHandler() {
         file = instance.getConfig();
 
-        configMap = new HashMap();
+        configMap = new HashMap<>();
 
         i18 = new File(instance.getDataFolder(), "zh_cn.yml");
 
@@ -78,10 +76,12 @@ public class ConfigurationHandler {
             for (String elementNode : facilities.getKeys(false)) {
                 ConfigurationSection elementNodee = facilities.getConfigurationSection(elementNode);
 
-                for (String innerKey : elementNodee.getKeys(true)) {
-                    String tempKey = facilities.getName() + "." + elementNode + "." + innerKey;
+                if (elementNodee != null) {
+                    for (String innerKey : elementNodee.getKeys(true)) {
+                        String tempKey = facilities.getName() + "." + elementNode + "." + innerKey;
 
-                    configMap.put(tempKey, elementNodee.get(innerKey));
+                        configMap.put(tempKey, elementNodee.get(innerKey));
+                    }
                 }
             }
         }
