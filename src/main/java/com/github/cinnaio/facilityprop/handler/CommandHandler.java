@@ -1,14 +1,10 @@
 package com.github.cinnaio.facilityprop.handler;
 
 import com.github.cinnaio.facilityprop.FacilityProp;
-import com.github.cinnaio.facilityprop.utils.HexCodeUtils;
 import com.github.cinnaio.facilityprop.utils.MessageUtils;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class CommandHandler implements CommandExecutor {
     private ConfigurationHandler configInstance = FacilityProp.getConfigInstance();
@@ -16,9 +12,6 @@ public class CommandHandler implements CommandExecutor {
     private FunctionHandler functionHandler = FacilityProp.getFunctionHandler();
 
     private i18Handler i18Handler = configInstance.getI18h();
-
-    public CommandHandler() {
-    }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
