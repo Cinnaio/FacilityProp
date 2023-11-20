@@ -23,6 +23,7 @@ public final class FacilityProp extends JavaPlugin {
             this.getLogger().severe("Disabled due to no Vault dependency found!");
             this.getServer().getPluginManager().disablePlugin(this);
         }
+
         instance = this;
 
         configInstance = new ConfigurationHandler();
