@@ -22,6 +22,8 @@ public class ConfigurationHandler {
 
     private i18Handler i18h;
 
+    private String prefix;
+
     public ConfigurationHandler() {
         file = instance.getConfig();
 
@@ -40,6 +42,8 @@ public class ConfigurationHandler {
         i18h = new i18Handler(lang);
 
         initConfigMap();
+
+        prefix = configMap.get("basic.prefix") + " &#FBEDF6";
     }
 
     public void reload() {
@@ -47,11 +51,12 @@ public class ConfigurationHandler {
 
         file = instance.getConfig();
 
-        i18 = new File(instance.getDataFolder(), "zh_cn.yml");
-
-        lang = YamlConfiguration.loadConfiguration(i18);
-
-        i18h = new i18Handler(lang);
+//        暂时放弃对其他文件的重载
+//        i18 = new File(instance.getDataFolder(), "zh_cn.yml");
+//
+//        lang = YamlConfiguration.loadConfiguration(i18);
+//
+//        i18h = new i18Handler(lang);
 
         configMap.clear();
         initConfigMap();
@@ -97,5 +102,9 @@ public class ConfigurationHandler {
 
     public HashMap<String, Object> getConfigMap() {
         return configMap;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 }
