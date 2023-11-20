@@ -1,7 +1,7 @@
 package com.github.cinnaio.facilityprop.handler;
 
 import com.github.cinnaio.facilityprop.FacilityProp;
-import com.github.cinnaio.facilityprop.utils.HexCodeUtils;
+import com.github.cinnaio.facilityprop.utils.MessageUtils;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockInteractEvent;
 import dev.lone.itemsadder.api.ItemsAdder;
@@ -28,8 +28,6 @@ public class FunctionHandler {
     private Economy economy;
 
     private JavaPlugin instance;
-
-    private String prefix;
 
     static String SUN = "sun";
 
@@ -63,8 +61,6 @@ public class FunctionHandler {
         instance = FacilityProp.getInstance();
 
         i18Handler = configHandler.getI18h();
-
-        prefix = configMap.get("basic.prefix") + " &#FBEDF6";
     }
 
     @SuppressWarnings("deprecation")
@@ -88,6 +84,8 @@ public class FunctionHandler {
 
     @SuppressWarnings("deprecation")
     public boolean itemEquality(CustomBlockInteractEvent e, String string) {
+        Player p = e.getPlayer();
+
         if (e.getItem() == null) {
             return false;
         } else {
@@ -118,28 +116,28 @@ public class FunctionHandler {
                                         for (Object permission : permissions) {
                                             if (!e.getPlayer().hasPermission((String) permission)) {
                                                 // 权限缺少信息
-                                                e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_permission));
+                                                MessageUtils.sendMessage(p, i18Handler.error_permission);
                                                 return false;
                                             }
 
                                             if (configMap.get(innerContext + ".money") != null) {
-                                                return conduct(e, innerContext, rquireAmount, requireNodeName);
+                                                return conduct(e, innerContext, rquireAmount, requireNodeName, p);
                                             }
                                         }
                                     } else if (configMap.get(innerContext + ".money") != null) {
-                                        return conduct(e, innerContext, rquireAmount, requireNodeName);
+                                        return conduct(e, innerContext, rquireAmount, requireNodeName, p);
                                     }
                                 }
                                 // 天气不匹配信息
-                                e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_weather));
+                                MessageUtils.sendMessage(p, i18Handler.error_weather);
                                 return false;
                             }
                             // 手上物品数量不匹配信息
-                            e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_amount));
+                            MessageUtils.sendMessage(p, i18Handler.error_amount);
                             return false;
 
                         }
-//                        // 手上物品ID不匹配信息
+//                        手上物品ID不匹配信息
 //                        e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_item));
 //                        return false;
                     }
@@ -151,7 +149,7 @@ public class FunctionHandler {
     }
 
     @SuppressWarnings("deprecation")
-    public boolean conduct(CustomBlockInteractEvent e, String innerContext, int rquireAmount, String requireNodeName) {
+    public boolean conduct(CustomBlockInteractEvent e, String innerContext, int rquireAmount, String requireNodeName, Player p) {
         try {
             double money = (double) configMap.get(innerContext + ".money");
 
@@ -164,7 +162,7 @@ public class FunctionHandler {
                     e.getItem().setAmount(0);
                 }
 
-                e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.success_money + " " + money + " 金币"));
+                MessageUtils.sendMessage(p, i18Handler.success_money + money);
 
                 String temp = requireNodeName + ".provided";
 
@@ -192,11 +190,11 @@ public class FunctionHandler {
                 return true;
             }
 
-            e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_money));
+            MessageUtils.sendMessage(p, i18Handler.error_money);
             return false;
         } catch (ClassCastException exception) {
             instance.getLogger().severe("Exception thrown: " + exception);
-            e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_toop));
+            MessageUtils.sendMessage(p, i18Handler.error_toop);
         }
 
         return false;
@@ -212,7 +210,6 @@ public class FunctionHandler {
             }
         }
 
-        sender.sendMessage("所有设备数量: " + a);
-        a = 0;
+        MessageUtils.sendMessage(sender, i18Handler.number_facility + a);
     }
 }
