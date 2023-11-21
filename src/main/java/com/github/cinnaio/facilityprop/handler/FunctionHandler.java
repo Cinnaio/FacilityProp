@@ -1,14 +1,15 @@
 package com.github.cinnaio.facilityprop.handler;
 
 import com.github.cinnaio.facilityprop.FacilityProp;
+import com.github.cinnaio.facilityprop.listener.InteractEvent;
 import com.github.cinnaio.facilityprop.utils.MessageUtils;
+import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockInteractEvent;
 import dev.lone.itemsadder.api.ItemsAdder;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -37,7 +38,17 @@ public class FunctionHandler {
 
     static String STORM = "storm";
 
-    public static String getWorldWeather(Player player) {
+    public FunctionHandler() {
+        configMap = configHandler.getConfigMap();
+
+        economy = FacilityProp.getEconomy();
+
+        instance = FacilityProp.getInstance();
+
+        i18Handler = configHandler.getI18h();
+    }
+
+    public String getWorldWeather(Player player) {
         World world = player.getWorld();
 
         String tmp = world.isClearWeather() ? SUN : RAIN;
@@ -51,16 +62,6 @@ public class FunctionHandler {
         } else {
             return SUN;
         }
-    }
-
-    public FunctionHandler() {
-        configMap = configHandler.getConfigMap();
-
-        economy = FacilityProp.getEconomy();
-
-        instance = FacilityProp.getInstance();
-
-        i18Handler = configHandler.getI18h();
     }
 
     @SuppressWarnings("deprecation")
@@ -83,7 +84,7 @@ public class FunctionHandler {
     }
 
     @SuppressWarnings("deprecation")
-    public boolean itemEquality(CustomBlockInteractEvent e, String string) {
+    public boolean itemEquality(CustomBlockInteractEvent e, String facilityId) {
         Player p = e.getPlayer();
 
         if (e.getItem() == null) {
@@ -91,7 +92,7 @@ public class FunctionHandler {
         } else {
             String itemId = ItemsAdder.getCustomItemName(e.getItem());
 
-            ConfigurationSection blockNodee = configHandler.getFile().getConfigurationSection("facilities." + string);
+            ConfigurationSection blockNodee = configHandler.getFile().getConfigurationSection("facilities." + facilityId);
 
             for (String itemsNode : blockNodee.getKeys(false)) {
                 if (itemsNode.equals("exchanges")) {
@@ -121,11 +122,11 @@ public class FunctionHandler {
                                             }
 
                                             if (configMap.get(innerContext + ".money") != null) {
-                                                return conduct(e, innerContext, rquireAmount, requireNodeName, p);
+                                                return preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
                                             }
                                         }
                                     } else if (configMap.get(innerContext + ".money") != null) {
-                                        return conduct(e, innerContext, rquireAmount, requireNodeName, p);
+                                        return preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
                                     }
                                 }
                                 // 天气不匹配信息
@@ -149,55 +150,95 @@ public class FunctionHandler {
     }
 
     @SuppressWarnings("deprecation")
-    public boolean conduct(CustomBlockInteractEvent e, String innerContext, int rquireAmount, String requireNodeName, Player p) {
+    public boolean preConduct(CustomBlockInteractEvent e, String innerContext, int rquireAmount, String requireNodeName, Player p, String facilityId) {
+        double money = 0;
+
         try {
-            double money = (double) configMap.get(innerContext + ".money");
-
-            EconomyResponse r = economy.withdrawPlayer(e.getPlayer(), money);
-
-            if (r.transactionSuccess()) {
-                if (e.getItem().getAmount() > rquireAmount) {
-                    e.getItem().setAmount(e.getItem().getAmount() - (Integer)configMap.get(requireNodeName + ".amount"));
-                } else {
-                    e.getItem().setAmount(0);
-                }
-
-                MessageUtils.sendMessage(p, i18Handler.success_money + money);
-
-                String temp = requireNodeName + ".provided";
-
-                ConfigurationSection providedNode = configHandler.getFile().getConfigurationSection(temp);
-
-                if (providedNode != null) {
-                    for (String context : providedNode.getKeys(false)) {
-                        Integer amountData = (Integer) configMap.get(temp + "." + context + ".amount");
-
-                        if (CustomStack.isInRegistry((String) configMap.get(temp + "." + context + ".name-space"))) {
-                            ItemStack itemStack = ItemsAdder.getCustomItem((String) configMap.get(temp + "." + context + ".name-space"));
-                            itemStack.setAmount(amountData);
-
-                            e.getPlayer().getInventory().addItem(itemStack);
-                        } else {
-                            String materialData = ((String) configMap.get(temp + "." + context + ".name-space")).substring(((String) configMap.get(temp + "." + context + ".name-space")).indexOf(":") + 1).toUpperCase();
-
-                            ItemStack itemStack = new ItemStack(Material.getMaterial(materialData), amountData);
-
-                            e.getPlayer().getInventory().addItem(itemStack);
-                        }
-                    }
-                }
-
-                return true;
-            }
-
-            MessageUtils.sendMessage(p, i18Handler.error_money);
-            return false;
+            money = (double) configMap.get(innerContext + ".money");
         } catch (ClassCastException exception) {
             instance.getLogger().severe("Exception thrown: " + exception);
             MessageUtils.sendMessage(p, i18Handler.error_toop);
+
+            return false;
         }
 
+        EconomyResponse r = economy.withdrawPlayer(e.getPlayer(), money);
+
+        if (r.transactionSuccess()) {
+            if (e.getItem().getAmount() > rquireAmount) {
+                e.getItem().setAmount(e.getItem().getAmount() - (Integer)configMap.get(requireNodeName + ".amount"));
+            } else {
+                e.getItem().setAmount(0);
+            }
+
+            MessageUtils.sendMessage(p, i18Handler.success_money + money);
+
+            String temp = requireNodeName + ".provided";
+
+            ConfigurationSection providedNode = configHandler.getFile().getConfigurationSection(temp);
+
+            if (providedNode != null) {
+                for (String context : providedNode.getKeys(false)) {
+                    Integer amountData = (Integer) configMap.get(temp + "." + context + ".amount");
+
+                    if (CustomStack.isInRegistry((String) configMap.get(temp + "." + context + ".name-space"))) {
+                        ItemStack itemStack = ItemsAdder.getCustomItem((String) configMap.get(temp + "." + context + ".name-space"));
+                        itemStack.setAmount(amountData);
+
+                        conduct(e, p, itemStack, facilityId, requireNodeName);
+                    } else {
+                        String materialData = ((String) configMap.get(temp + "." + context + ".name-space")).substring(((String) configMap.get(temp + "." + context + ".name-space")).indexOf(":") + 1).toUpperCase();
+
+                        ItemStack itemStack = new ItemStack(Material.getMaterial(materialData), amountData);
+
+                        conduct(e, p, itemStack, facilityId, requireNodeName);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        MessageUtils.sendMessage(p, i18Handler.error_money);
         return false;
+    }
+
+    public void conduct(CustomBlockInteractEvent e, Player p, ItemStack itemStack, String facilityId, String requireNodeName) {
+        InteractEvent.flag = true;
+
+        String facilityID = "facilities." + facilityId;
+
+        String requireDelay = requireNodeName + ".delay";
+
+        long delay = (Integer) configMap.get(requireDelay) * 20L;
+
+        Location location = e.getBlockClicked().getLocation();
+
+        String soundProcessing = (String) configMap.get(facilityID + ".sound-processing");
+        String soundProcessed = (String) configMap.get(facilityID + ".sound-processed");
+        String namespace = (String) configMap.get(facilityID + ".name-space");
+        String targetNamespace = (String) configMap.get(facilityID + ".target-name-space");
+
+        // 替换模型 以及播放音乐
+        CustomBlock.place(targetNamespace, location);
+        p.playSound(location, Sound.valueOf(soundProcessing), 10, 4);
+
+        // 停止音乐
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            p.stopSound(Sound.valueOf(soundProcessing));
+        }, delay);
+
+        // 还原模型 以及播放结束音乐
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            CustomBlock.place(namespace, location);
+            p.playSound(location, Sound.valueOf(soundProcessed), 10, 4);
+
+            InteractEvent.flag = false;
+        }, delay);
+
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            e.getPlayer().getInventory().addItem(itemStack);
+        }, delay + 3L);
     }
 
     public void listAllFacilities(CommandSender sender) {
