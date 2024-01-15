@@ -55,6 +55,7 @@ public final class FacilityProp extends JavaPlugin {
 
     public void onDisable() {
         instance = null;
+        Bukkit.getScheduler().cancelTasks(this);
     }
 
     public static JavaPlugin getInstance() {
