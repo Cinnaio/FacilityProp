@@ -1,6 +1,7 @@
 error_toop: "发生了错误请向管理员进行报告！"
 error_weather: "当前世界的天气与配方制作天气不匹配！"
 error_money: "你没有足够的金币！"
+error_exp: "你没有足够的经验！"
 error_permission: "你没有足够的权限！"
 error_amount: "你没有足够的物品！"
 error_item: "当前物品与配方制作物品不相符！"
