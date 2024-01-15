@@ -1,6 +1,7 @@
 package com.github.cinnaio.facilityprop.handler;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 public class i18Handler {
     public String error_toop;
@@ -8,6 +9,8 @@ public class i18Handler {
     public String error_weather;
 
     public String error_money;
+
+    public String error_exp;
 
     public String error_permission;
 
@@ -27,6 +30,8 @@ public class i18Handler {
         error_weather = lang.getString("error_weather");
 
         error_money = lang.getString("error_money");
+
+        error_exp = lang.getString("error_exp");
 
         error_permission = lang.getString("error_permission");
 
