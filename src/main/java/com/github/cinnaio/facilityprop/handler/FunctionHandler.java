@@ -121,11 +121,9 @@ public class FunctionHandler {
                                                 return false;
                                             }
 
-                                            if (configMap.get(innerContext + ".money") != null) {
-                                                return preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
-                                            }
+                                            preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
                                         }
-                                    } else if (configMap.get(innerContext + ".money") != null) {
+                                    } else {
                                         return preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
                                     }
                                 }
@@ -153,16 +151,31 @@ public class FunctionHandler {
     public boolean preConduct(CustomBlockInteractEvent e, String innerContext, int rquireAmount, String requireNodeName, Player p, String facilityId) {
         double money = 0;
 
+        int exp = 0;
+
+        EconomyResponse r = economy.withdrawPlayer(e.getPlayer(), money);
+
         try {
-            money = (double) configMap.get(innerContext + ".money");
+            if (configMap.get(innerContext + ".exp") != null) {
+                exp = (int) configMap.get(innerContext + ".exp");
+
+                if (p.getTotalExperience() >= exp) {
+                    p.giveExp(-exp);
+                } else {
+                    MessageUtils.sendMessage(p, i18Handler.error_exp);
+                    return false;
+                }
+            }
+
+            if (configMap.get(innerContext + ".money") != null) {
+                money = (double) configMap.get(innerContext + ".money");
+            }
         } catch (ClassCastException exception) {
             instance.getLogger().severe("Exception thrown: " + exception);
             MessageUtils.sendMessage(p, i18Handler.error_toop);
 
             return false;
         }
-
-        EconomyResponse r = economy.withdrawPlayer(e.getPlayer(), money);
 
         if (r.transactionSuccess()) {
             if (e.getItem().getAmount() > rquireAmount) {
@@ -171,7 +184,9 @@ public class FunctionHandler {
                 e.getItem().setAmount(0);
             }
 
-            MessageUtils.sendMessage(p, i18Handler.success_money + money);
+            if (money != 0) {
+                MessageUtils.sendMessage(p, i18Handler.success_money + money);
+            }
 
             String temp = requireNodeName + ".provided";
 
@@ -210,6 +225,8 @@ public class FunctionHandler {
 
         String requireDelay = requireNodeName + ".delay";
 
+        String requireExp = requireNodeName + ".exp-gived";
+
         long delay = (Integer) configMap.get(requireDelay) * 20L;
 
         Location location = e.getBlockClicked().getLocation();
@@ -232,6 +249,13 @@ public class FunctionHandler {
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             CustomBlock.place(namespace, location);
             p.playSound(location, Sound.valueOf(soundProcessed), 10, 4);
+
+            if (configMap.get(requireExp) != null) {
+                int exp = (int) configMap.get(requireExp);
+
+                p.giveExp(exp);
+                p.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 0.1f, 1.0f);
+            }
 
             InteractEvent.flag = false;
         }, delay);
