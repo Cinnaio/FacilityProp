@@ -15,10 +15,6 @@ facilities:
         delay: 1
         conditions:
           weather: 'sun'
-          permission:
-            - perm.matcha
-            - perm.aaa
-          money: 100.00
         provided:
           1:
             name-space: 'minecraft:stone'
@@ -36,11 +32,13 @@ facilities:
         name-space: 'grxi:matcha_leaf'
         amount: 20
         delay: 1
+        exp-gived: 5
         conditions:
           weather: 'sun'
           permission:
             - perm.matcha
           money: 100.00
+          exp: 1
         provided:
           1:
             name-space: 'minecraft:stone'
