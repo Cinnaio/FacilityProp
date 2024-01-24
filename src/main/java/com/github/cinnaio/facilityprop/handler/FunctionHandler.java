@@ -153,7 +153,11 @@ public class FunctionHandler {
 
         int exp = 0;
 
-        EconomyResponse r = economy.withdrawPlayer(e.getPlayer(), money);
+        EconomyResponse r = null;
+
+        if (FacilityProp.getEconomy() != null) {
+            r = economy.withdrawPlayer(e.getPlayer(), money);
+        }
 
         try {
             if (configMap.get(innerContext + ".exp") != null) {
@@ -179,7 +183,7 @@ public class FunctionHandler {
 
         if (r.transactionSuccess()) {
             if (e.getItem().getAmount() > rquireAmount) {
-                e.getItem().setAmount(e.getItem().getAmount() - (Integer)configMap.get(requireNodeName + ".amount"));
+                e.getItem().setAmount(e.getItem().getAmount() - (Integer) configMap.get(requireNodeName + ".amount"));
             } else {
                 e.getItem().setAmount(0);
             }
@@ -240,13 +244,10 @@ public class FunctionHandler {
         CustomBlock.place(targetNamespace, location);
         p.playSound(location, Sound.valueOf(soundProcessing), 10, 4);
 
-        // 停止音乐
+        // 停止音乐 还原模型 以及播放结束音乐
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             p.stopSound(Sound.valueOf(soundProcessing));
-        }, delay);
 
-        // 还原模型 以及播放结束音乐
-        Bukkit.getScheduler().runTaskLater(instance, () -> {
             CustomBlock.place(namespace, location);
             p.playSound(location, Sound.valueOf(soundProcessed), 10, 4);
 
@@ -258,11 +259,11 @@ public class FunctionHandler {
             }
 
             InteractEvent.flag = false;
-        }, delay);
 
-        Bukkit.getScheduler().runTaskLater(instance, () -> {
-            e.getPlayer().getInventory().addItem(itemStack);
-        }, delay + 3L);
+            Bukkit.getScheduler().runTaskLater(instance, () -> {
+                e.getPlayer().getInventory().addItem(itemStack);
+            }, 3L);
+        }, delay);
     }
 
     public void listAllFacilities(CommandSender sender) {

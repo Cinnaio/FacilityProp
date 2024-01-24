@@ -31,6 +31,7 @@ public final class FacilityProp extends JavaPlugin {
         functionHandler = new FunctionHandler();
 
         Bukkit.getPluginCommand("facilityprop").setExecutor(new CommandHandler());
+        Bukkit.getPluginCommand("facilityprop").setTabCompleter(new CommandHandler());
 
         Bukkit.getPluginManager().registerEvents(new InteractEvent(), this);
     }
