@@ -5,8 +5,12 @@ import com.github.cinnaio.facilityprop.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
-public class CommandHandler implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommandHandler implements TabExecutor {
     private ConfigurationHandler configInstance = FacilityProp.getConfigInstance();
 
     private FunctionHandler functionHandler = FacilityProp.getFunctionHandler();
@@ -34,5 +38,15 @@ public class CommandHandler implements CommandExecutor {
             MessageUtils.sendMessage(sender, i18Handler.error_permission);
             return false;
         }
+    }
+
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        List<String> completions = new ArrayList();
+        if (args.length == 1) {
+            completions.add("reload");
+            completions.add("list");
+        }
+
+        return completions;
     }
 }
