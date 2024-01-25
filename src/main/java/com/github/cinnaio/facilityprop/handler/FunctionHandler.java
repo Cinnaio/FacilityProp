@@ -10,6 +10,7 @@ import dev.lone.itemsadder.api.ItemsAdder;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -18,11 +19,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionHandler {
     private ConfigurationHandler configHandler = FacilityProp.getConfigInstance();
 
     private HashMap<String, Object> configMap;
+
+    private Map<Location, Block> clickedBlockList = InteractEvent.getClickedBlockList();
 
     private i18Handler i18Handler;
 
@@ -120,11 +124,16 @@ public class FunctionHandler {
                                                 MessageUtils.sendMessage(p, i18Handler.error_permission);
                                                 return false;
                                             }
-
+                                            clickedBlockList.put(e.getBlockClicked().getLocation(), e.getBlockClicked());
                                             preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
+
+                                            return true;
                                         }
                                     } else {
-                                        return preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
+                                        clickedBlockList.put(e.getBlockClicked().getLocation(), e.getBlockClicked());
+                                        preConduct(e, innerContext, rquireAmount, requireNodeName, p, facilityId);
+
+                                        return true;
                                     }
                                 }
                                 // 天气不匹配信息
@@ -136,9 +145,6 @@ public class FunctionHandler {
                             return false;
 
                         }
-//                        手上物品ID不匹配信息
-//                        e.getPlayer().sendMessage(HexCodeUtils.translateHexCodes(prefix + i18Handler.error_item));
-//                        return false;
                     }
                 }
             }
@@ -223,8 +229,6 @@ public class FunctionHandler {
     }
 
     public void conduct(CustomBlockInteractEvent e, Player p, ItemStack itemStack, String facilityId, String requireNodeName) {
-        InteractEvent.flag = true;
-
         String facilityID = "facilities." + facilityId;
 
         String requireDelay = requireNodeName + ".delay";
@@ -240,11 +244,9 @@ public class FunctionHandler {
         String namespace = (String) configMap.get(facilityID + ".name-space");
         String targetNamespace = (String) configMap.get(facilityID + ".target-name-space");
 
-        // 替换模型 以及播放音乐
         CustomBlock.place(targetNamespace, location);
         p.playSound(location, Sound.valueOf(soundProcessing), 10, 4);
 
-        // 停止音乐 还原模型 以及播放结束音乐
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             p.stopSound(Sound.valueOf(soundProcessing));
 
@@ -258,10 +260,13 @@ public class FunctionHandler {
                 p.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 0.1f, 1.0f);
             }
 
-            InteractEvent.flag = false;
-
             Bukkit.getScheduler().runTaskLater(instance, () -> {
-                e.getPlayer().getInventory().addItem(itemStack);
+                Player player = Bukkit.getPlayer(e.getPlayer().getUniqueId());
+                if (player != null && player.isOnline()) {
+                    e.getPlayer().getInventory().addItem(itemStack);
+                }
+
+                clickedBlockList.remove(e.getBlockClicked().getLocation());
             }, 3L);
         }, delay);
     }

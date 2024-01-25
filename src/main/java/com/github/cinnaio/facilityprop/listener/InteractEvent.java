@@ -2,38 +2,44 @@ package com.github.cinnaio.facilityprop.listener;
 
 import com.github.cinnaio.facilityprop.FacilityProp;
 import com.github.cinnaio.facilityprop.handler.FunctionHandler;
+import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import dev.lone.itemsadder.api.Events.CustomBlockInteractEvent;
-import dev.lone.itemsadder.api.ItemsAdder;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-public class InteractEvent implements Listener {
-    public static boolean flag = false;
+import java.util.HashMap;
 
+public class InteractEvent implements Listener {
     private FunctionHandler funHandler = FacilityProp.getFunctionHandler();
 
+    private static HashMap<Location, Block> clickedBlockList = new HashMap<>();
+
     @EventHandler
-    public void InteractDetection(CustomBlockInteractEvent e) {
+    public void OnInteractDetection(CustomBlockInteractEvent e) {
         if (e.getHand().equals(EquipmentSlot.OFF_HAND)) {
             e.setCancelled(true);
         } else if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             String temp = funHandler.blockEquality(e);
 
             if (temp != null && funHandler.itemEquality(e, temp)) {
-                return;
             }
         }
     }
 
     @EventHandler
-    public void HaltBroken(BlockBreakEvent e) {
-        if (ItemsAdder.isCustomBlock(e.getBlock())) {
-            if (flag) {
+    public void HaltBroken(CustomBlockBreakEvent e) {
+        if (!clickedBlockList.isEmpty()) {
+            if (clickedBlockList.get(e.getBlock().getLocation()) != null && clickedBlockList.get(e.getBlock().getLocation()).equals(e.getBlock())) {
                 e.setCancelled(true);
             }
         }
+    }
+
+    public static HashMap<Location, Block> getClickedBlockList() {
+        return clickedBlockList;
     }
 }
