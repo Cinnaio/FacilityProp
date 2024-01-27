@@ -1,7 +1,7 @@
 # FacilityProp v2 Recreated by Cinnaio
 # 2023/11/15
 basic:
-  prefix: '&8[ &#d9fbb4群隙 &8]'
+  prefix: ''
 facilities:
   teapan:
     name-space: 'grxi:teapan'
@@ -19,9 +19,11 @@ facilities:
           1:
             name-space: 'minecraft:stone'
             amount: 2
+            expression: '80.0 + level * 3.0'
           2:
             name-space: 'grxi:white_tea_leaf'
             amount: 4
+            expression: '20.0 + level * 3.0'
   plant:
     name-space: 'grxi:teapan'
     target-name-space: 'grxi:teapan_wet'
@@ -43,6 +45,8 @@ facilities:
           1:
             name-space: 'minecraft:stone'
             amount: 2
+            expression: '80.0 + level * 3.0'
           2:
             name-space: 'grxi:white_tea_leaf'
             amount: 4
+            expression: '80.0 + level * 3.0'

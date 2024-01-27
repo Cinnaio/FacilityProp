@@ -8,6 +8,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mariuszgromada.math.mxparser.License;
 
 public final class FacilityProp extends JavaPlugin {
     private static JavaPlugin instance;
@@ -23,6 +24,8 @@ public final class FacilityProp extends JavaPlugin {
             this.getLogger().severe("Disabled due to no Vault dependency found!");
             this.getServer().getPluginManager().disablePlugin(this);
         }
+
+        License.iConfirmNonCommercialUse("FacilityProp");
 
         instance = this;
 

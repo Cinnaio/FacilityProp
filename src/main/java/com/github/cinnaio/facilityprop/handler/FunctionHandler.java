@@ -16,6 +16,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +209,34 @@ public class FunctionHandler {
             if (providedNode != null) {
                 for (String context : providedNode.getKeys(false)) {
                     Integer amountData = (Integer) configMap.get(temp + "." + context + ".amount");
+
+                    try {
+                        String expression = (String) configMap.get(temp + "." + context + ".expression");
+
+                        int luckLevel = 0;
+
+                        for (PotionEffect potionEffect : p.getActivePotionEffects()) {
+                            if (potionEffect.getType().equals(PotionEffectType.LUCK)) {
+                                luckLevel = potionEffect.getAmplifier() + 1;
+                            }
+                        }
+
+                        Argument level = new Argument("level", luckLevel);
+
+                        Expression expr = new Expression(expression, level);
+
+                        System.out.println(expr.calculate());
+
+                        if (Math.random() >= (expr.calculate() / 100)) {
+                            amountData = 0;
+                        }
+
+                    } catch (NullPointerException exception) {
+                        instance.getLogger().severe("Exception thrown: " + exception);
+                        MessageUtils.sendMessage(p, i18Handler.error_toop);
+
+                        return false;
+                    }
 
                     if (CustomStack.isInRegistry((String) configMap.get(temp + "." + context + ".name-space"))) {
                         ItemStack itemStack = ItemsAdder.getCustomItem((String) configMap.get(temp + "." + context + ".name-space"));
