@@ -43,20 +43,17 @@ public class ConfigurationHandler {
 
         initConfigMap();
 
-        prefix = configMap.get("basic.prefix") + " &#FBEDF6";
+        if (configMap.get("basic.prefix") != null) {
+            prefix = configMap.get("basic.prefix") + " &#FBEDF6";
+        } else {
+            prefix = null;
+        }
     }
 
     public void reload() {
         instance.reloadConfig();
 
         file = instance.getConfig();
-
-//        暂时放弃对其他文件的重载
-//        i18 = new File(instance.getDataFolder(), "zh_cn.yml");
-//
-//        lang = YamlConfiguration.loadConfiguration(i18);
-//
-//        i18h = new i18Handler(lang);
 
         configMap.clear();
         initConfigMap();
