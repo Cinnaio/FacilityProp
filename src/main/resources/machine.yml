@@ -1,0 +1,57 @@
+facilities:
+  teapan:
+    # 可选 ItemsAdder 及 Minecraft原版 方块(block)
+    # eg: Itemsadder: 'namespace:path'
+    # eg: 原版: 'path' path 填英文id
+    id: 'grxi:teapan'
+    gui:
+      create_gui: true
+      inv_amount: 9
+    script:
+      sound:
+        processing: 'BLOCK_AZALEA_PLACE'
+        porcessed: 'BLOCK_BEEHIVE_DRIP'
+      # 与上 id 相同
+      id_change: 'grxi:teapan_wet'
+    recipes:
+      1:
+        # 可选 ItemsAdder 及 Minecraft原版 物品(item)
+        id: 'grxi:matcha_leaf'
+        amount: 5
+        # 默认单位 s
+        dealy: 2
+        xp: 6
+        out:
+          # 同上 id
+          id: 'stone'
+          amount: 1
+          xp: 2
+      2:
+        id: 'grxi:matcha_leaf'
+        amount: 5
+        dealy: 2
+        xp: 6
+        out:
+          id: 'stone'
+          amount: 1
+          xp: 2
+  example:
+    id: 'grxi:teapan'
+    gui:
+      create_gui: true
+      inv_amount: 9
+    script:
+      sound:
+        processing: 'BLOCK_AZALEA_PLACE'
+        porcessed: 'BLOCK_BEEHIVE_DRIP'
+      id_change: 'grxi:teapan_wet'
+    recipes:
+      1:
+        id: 'grxi:matcha_leaf'
+        amount: 5
+        dealy: 2
+        xp: 6
+        out:
+          id: 'stone'
+          amount: 1
+          xp: 2

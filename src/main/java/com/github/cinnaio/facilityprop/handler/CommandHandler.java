@@ -1,50 +1,47 @@
 package com.github.cinnaio.facilityprop.handler;
 
 import com.github.cinnaio.facilityprop.FacilityProp;
-import com.github.cinnaio.facilityprop.utils.MessageUtils;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandHandler implements TabExecutor {
-    private ConfigurationHandler configInstance = FacilityProp.getConfigInstance();
-
-    private FunctionHandler functionHandler = FacilityProp.getFunctionHandler();
-
-    private i18Handler i18Handler = configInstance.getI18h();
-
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length == 0) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+        if (args.length == 0)
             return false;
-        } else {
-            if (sender.hasPermission("facilityprop.admin")) {
-                if (args[0].equals("reload")) {
-                    this.configInstance.reload();
 
-                    MessageUtils.sendMessage(sender, i18Handler.success_reload_config);
-                    return true;
-                }
+        switch (args[0]) {
+            case "reload" : {
+                FacilityProp.getInstance().reload();
 
-                if (args[0].equals("list")) {
-                    this.functionHandler.listAllFacilities(sender);
-                    return true;
-                }
+                break;
             }
-
-            MessageUtils.sendMessage(sender, i18Handler.error_permission);
-            return false;
+            case "add" : {
+                break;
+            }
+            case "getmeta" : {
+                break;
+            }
+            default : {
+                return false;
+            }
         }
+        return false;
     }
 
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        List<String> completions = new ArrayList();
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        List<String> completions = new ArrayList<>();
+
         if (args.length == 1) {
             completions.add("reload");
-            completions.add("list");
+            completions.add("add");
+            completions.add("getmeta");
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("add")) {
+            completions.add("目录名 标签名");
         }
 
         return completions;

@@ -1,6 +1,5 @@
 package com.github.cinnaio.facilityprop.utils;
 
-import com.github.cinnaio.facilityprop.FacilityProp;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -12,10 +11,10 @@ public class MessageUtils {
     }
 
     public static void sendMessage(Player p, String msg) {
-        p.sendMessage(HexCodeUtils.translateHexCodes(FacilityProp.getConfigInstance().getPrefix() + msg));
+        p.sendMessage(HexCodeUtils.translateHexCodes(msg));
     }
 
     public static void sendMessage(CommandSender sender, String msg) {
-        sender.sendMessage(HexCodeUtils.translateHexCodes(FacilityProp.getConfigInstance().getPrefix() + msg));
+        sender.sendMessage(HexCodeUtils.translateHexCodes(msg));
     }
 }
